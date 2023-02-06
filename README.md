@@ -1,4 +1,4 @@
-### Build a bad EE
+### Build a bad Execution Environment (EE)
 
 This repo gives Dockerfiles to build execution environments that will break AWX.
 The intent is to use these to test that our error-handling is behaving correctly.
