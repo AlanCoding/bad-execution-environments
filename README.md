@@ -26,3 +26,26 @@ surprise
 {"status": "error", "job_explanation": "Failed to JSON parse a line from transmit stream."}
 {"eof": true}
 ```
+
+How does the Dockerfile do this? It has an ugly `sed` command.
+This adds a line after
+
+```python
+        self._output = _output
+```
+
+that writes a word to that
+output buffer.
+
+#### Ending line
+
+In this scenario, we wish to write a non-json line after most of the job
+has finished, but still before the EOF event has been written.
+
+That EOF line is written right after in this line:
+
+```python
+    def finished_callback(self, runner_obj):
+```
+
+So _after_ this line we add the extra write.

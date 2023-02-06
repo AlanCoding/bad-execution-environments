@@ -1,19 +1,27 @@
-
 # most common customization would be to change this base image
 # depending on your task, you may prefer to use awx-ee instead
 # if you have no need for partially correct behavior, you may prefer a lower-level base
-BASE_IMAGE ?= quay.io/ansible/ansible-runner:latest
+BASE ?= quay.io/ansible/ansible-runner:latest
 
-# this allows switching from docker to podman, and is taken from ansible-runner
-CONTAINER_ENGINE ?= docker
+# the name of the output image without the tag
+OUTPUT ?= ghcr.io/alancoding/bad-ee
+
+# Container engine - this allows switching from docker to podman, and is taken from ansible-runner
+ENGINE ?= docker
+
+# the scenarios in this repo, all should be a folder here
+SCENARIOS = starting_line ending_line
 
 .PHONY: build push clean
 
+show:
+	$(foreach scenario,$(SCENARIOS),echo $(OUTPUT):$(scenario);)
+
 build:
-	cd starting_line/ && $(CONTAINER_ENGINE) build --build-arg BASE_IMAGE=$(BASE_IMAGE) -t ghcr.io/alancoding/bad-ee:starting_line .
+	$(foreach scenario,$(SCENARIOS),$(ENGINE) build --build-arg BASE_IMAGE=$(BASE) -t $(OUTPUT):$(scenario) $(scenario)/;)
 
 push:
-	$(CONTAINER_ENGINE) push ghcr.io/alancoding/bad-ee:starting_line
+	$(foreach scenario,$(SCENARIOS),$(ENGINE) push $(OUTPUT):$(scenario);)
 
 clean:
-	$(CONTAINER_ENGINE) rmi -f ghcr.io/alancoding/bad-ee:starting_line
+	$(foreach scenario,$(SCENARIOS),$(ENGINE) rmi -f $(OUTPUT):$(scenario);)
