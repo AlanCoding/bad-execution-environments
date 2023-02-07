@@ -10,7 +10,7 @@ OUTPUT ?= ghcr.io/alancoding/bad-ee
 ENGINE ?= docker
 
 # the scenarios in this repo, all should be a folder here
-SCENARIOS = starting_line ending_line
+SCENARIOS = starting_line ending_line traceback artifacts
 
 .PHONY: build push clean
 
