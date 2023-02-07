@@ -49,3 +49,24 @@ That EOF line is written right after in this line:
 ```
 
 So _after_ this line we add the extra write.
+
+#### Traceback
+
+This is the most credible case, and can be caused when ansible-runner
+is installed incorrectly due to some pip problem or file permissions.
+
+In this case, running `ansible-runner worker` will give a traceback and exit
+with a non-zero exit code before doing anything else meaningful.
+
+#### Artifacts
+
+This job should _look_ like it transmitted successfully, but actually
+the artifacts directory that gets streamed back is poisoned with bad data.
+
+This is mechanically similar to the ending_line scenario, but instead of
+getting past the artifacts callback, it should fail to extract the zip file.
+Typically, this is expected to give a BadZipFile type of exception, but
+we don't need to be particular about that.
+
+Interestingly, the job should report a successful status via the _status_
+callback, but the _artifacts_ will fail to be collected.
