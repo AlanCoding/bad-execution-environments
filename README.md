@@ -6,6 +6,20 @@ To be able to test, you need to run it as a container group job. Why?
 Because only container group jobs use the ansible-runner install from inside
 the image.
 
+To list what images will be produced:
+
+```
+$ make show
+ghcr.io/alancoding/bad-ee:starting_line
+ghcr.io/alancoding/bad-ee:ending_line
+ghcr.io/alancoding/bad-ee:traceback
+ghcr.io/alancoding/bad-ee:artifacts
+```
+
+These should be public, so you can use them in AWX execution environments.
+While you can do `make build`, the main intended use is to host them on
+ghcr associated with pushes to this repo.
+
 #### Starting line
 
 This should build an EE that gives non-json line from `ansible-runner worker`

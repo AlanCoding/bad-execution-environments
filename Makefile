@@ -12,17 +12,20 @@ ENGINE ?= docker
 # the scenarios in this repo, all should be a folder here
 SCENARIOS = starting_line ending_line traceback artifacts
 
+# location where ansible-runner is installed
+FOLDER ?= /usr/local/lib/python3.8/site-packages/ansible_runner
+
 .PHONY: show build test push clean
 
 show:
-	$(foreach scenario,$(SCENARIOS),echo $(OUTPUT):$(scenario);)
+	@$(foreach scenario,$(SCENARIOS),echo $(OUTPUT):$(scenario);)
 
 build:
-	$(foreach scenario,$(SCENARIOS),$(ENGINE) build --build-arg BASE_IMAGE=$(BASE) -t $(OUTPUT):$(scenario) $(scenario)/;)
+	$(foreach scenario,$(SCENARIOS),$(ENGINE) build --build-arg BASE_IMAGE=$(BASE) --build-arg FOLDER=$(FOLDER) -t $(OUTPUT):$(scenario) $(scenario)/;)
 
 test:
 	ansible-runner transmit demo/ -p test.yml > transmit_data.txt
-	$(foreach scenario,$(SCENARIOS),echo -e "\n$(scenario):" && $(ENGINE) run --rm -v $(shell pwd):/runner:Z $(OUTPUT):$(scenario) /bin/bash -c "cat transmit_data.txt | ansible-runner worker";)
+	@$(foreach scenario,$(SCENARIOS),echo -e "\n$(scenario):" && $(ENGINE) run --rm -v $(shell pwd):/runner:Z $(OUTPUT):$(scenario) /bin/bash -c "cat transmit_data.txt | ansible-runner worker";)
 
 push:
 	$(foreach scenario,$(SCENARIOS),$(ENGINE) push $(OUTPUT):$(scenario);)
