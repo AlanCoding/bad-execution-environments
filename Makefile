@@ -17,16 +17,19 @@ FOLDER ?= /usr/local/lib/python3.8/site-packages/ansible_runner
 
 .PHONY: show build test push clean
 
+# Print the image names for each scenario
 show:
 	@$(foreach scenario,$(SCENARIOS),echo $(OUTPUT):$(scenario);)
 
 build:
 	$(foreach scenario,$(SCENARIOS),$(ENGINE) build --build-arg BASE_IMAGE=$(BASE) --build-arg FOLDER=$(FOLDER) -t $(OUTPUT):$(scenario) $(scenario)/;)
 
+# Run and show the worker output for each scenario, which should show the bad syntax injected into the image
 run:
 	ansible-runner transmit _demo/ -p test.yml > transmit_data.txt
 	@$(foreach scenario,$(SCENARIOS),echo -e "\n$(scenario):" && $(ENGINE) run --rm -v $(shell pwd):/runner:Z $(OUTPUT):$(scenario) /bin/bash -c "cat transmit_data.txt | ansible-runner worker";)
 
+# Run and process the output from each scenario, will give messy results because of the errors
 test:
 	ansible-runner transmit _demo/ -p test.yml > transmit_data.txt
 	rm -rf _outs/
