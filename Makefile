@@ -24,7 +24,7 @@ build:
 	$(foreach scenario,$(SCENARIOS),$(ENGINE) build --build-arg BASE_IMAGE=$(BASE) --build-arg FOLDER=$(FOLDER) -t $(OUTPUT):$(scenario) $(scenario)/;)
 
 test:
-	ansible-runner transmit demo/ -p test.yml > transmit_data.txt
+	ansible-runner transmit _demo/ -p test.yml > transmit_data.txt
 	@$(foreach scenario,$(SCENARIOS),echo -e "\n$(scenario):" && $(ENGINE) run --rm -v $(shell pwd):/runner:Z $(OUTPUT):$(scenario) /bin/bash -c "cat transmit_data.txt | ansible-runner worker";)
 
 push:
