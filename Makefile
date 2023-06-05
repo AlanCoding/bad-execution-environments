@@ -27,7 +27,7 @@ build:
 # Run and show the worker output for each scenario, which should show the bad syntax injected into the image
 run:
 	ansible-runner transmit _demo/ -p test.yml > transmit_data.txt
-	@$(foreach scenario,$(SCENARIOS),echo -e "\n$(scenario):" && $(ENGINE) run --rm -v $(shell pwd):/runner:Z $(OUTPUT):$(scenario) /bin/bash -c "cat transmit_data.txt | ansible-runner worker";)
+	$(foreach scenario,$(SCENARIOS),echo -e "\n$(scenario):" && $(ENGINE) run --rm -v $(shell pwd):/runner:Z $(OUTPUT):$(scenario) /bin/bash -c "cat transmit_data.txt | ansible-runner worker";)
 
 # Run and process the output from each scenario, will give messy results because of the errors
 test:
